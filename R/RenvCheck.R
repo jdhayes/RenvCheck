@@ -1,10 +1,10 @@
 #!/usr/bin/env Rscript
 
-library(methods)
+#library(methods)
 #options(warn=-1)
 
 # Define method for calling each check function
-show <- function(object){
+run_checks <- function(object){
     maxwidth <- 15
     cat ("\n R Environment Test Results\n")
     for (i in 1:length(object)){
@@ -12,7 +12,7 @@ show <- function(object){
         name <- sub("_"," ",paste0(toupper(substring(name, 1,1)), substring(name, 2)))        
         padding <- rep(" ", maxwidth-nchar(name))
         cat (paste("\t",name)); cat(paste(padding,collapse='')); cat("\t: ");
-        cat(paste(as.character(do.call(names(object)[i], list())), "\n"));
+        cat(paste(as.character(do.call((object)[[i]], list())), "\n"));
     }
     cat ("\n")
 }
@@ -122,7 +122,7 @@ myRenvCheck$check_qsub <- function(){
 }
 
 # Run all checks
-.onLoad <- function(){
-    show(myRenvCheck)
+.onLoad <- function(libname, pkgname){
+    run_checks(myRenvCheck)
 }
 
