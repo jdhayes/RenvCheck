@@ -3,23 +3,7 @@
 library(methods)
 #options(warn=-1)
 
-# Define R environment check S4 class
-#   Every slot must be defined here, which turned out to be too restrictive
-#setClass ("renvcheck",
-#    representation(
-#                   storage="character"
-#    ),
-#    prototype(
-#              storage="Failed"
-#    )
-#)
-
-# Define and create R environment S3 class
-#   A better way to handle dynamic calling of functions
-myRenvCheck <- structure(list(), class="RenvCheck")
-
 # Define method for calling each check function
-#setMethod("show", "RenvCheck", function(object){
 show <- function(object){
     maxwidth <- 15
     cat ("\n R Environment Test Results\n")
@@ -33,27 +17,27 @@ show <- function(object){
     cat ("\n")
 }
 
-# Create R environment check object
-#  Only needed for S4 class, also remember that all values referencing differs "$" -> "@"
-#myRenvCheck <- new("renvcheck")
+# Define S3 class, A better way to handle dynamic calling of functions
+myRenvCheck <- structure(list(), class="RenvCheck")
 
 # Check for storage requirements
-check_storage <- function(){
-    hquota <- suppressWarnings(as.integer(strsplit(system('check_quota home',TRUE), "\\s+")[[3]][[4]]))
-    #bquota <- as.integer(strsplit(system('check_quota bigdata',TRUE), "\\s+")[[3]][[3]])
+myRenvCheck$check_storage <- function(){
+    quota_info <- suppressWarnings(strsplit(system('check_quota home',TRUE), "\\s+"))
+    hquota <- suppressWarnings(as.integer(quota_info[[3]][[4]]))
+    husage <- suppressWarnings(as.integer(quota_info[[3]][[3]]))
+    #bquota <- as.integer(strsplit(system('check_quota bigdata',TRUE), "\\s+")[[3]][[4]])
 
     if (!is.na(hquota)){
-        if (hquota - hquota > 5) {
+        if (hquota - husage > 5) {
             #as.integer(bquota[[3]][[4]])-as.ingeger(bquota[[3]][[3]])>5
             return("Passed")
         }
     }
     return("Failed")
 }
-myRenvCheck$check_storage <- TRUE
 
 # Check for library requirements
-check_systempiper <- function(){
+myRenvCheck$check_systempiper <- function(){
     Rlibs <- library()
 
     # Check for systemPipeR library
@@ -65,10 +49,9 @@ check_systempiper <- function(){
     }
     return("Failed")
 }
-myRenvCheck$check_systempiper <- TRUE
 
 # Check for individually installed libraries
-check_library <- function(){
+myRenvCheck$check_library <- function(){
     RlibsUser <- Sys.getenv("R_LIBS_USER")
     Rlibs <- suppressMessages(suppressWarnings(library(lib.loc=RlibsUser)))
     if (length(Rlibs$results)==0){
@@ -77,10 +60,9 @@ check_library <- function(){
         return("Failed")
     }
 }
-myRenvCheck$check_library <- TRUE
 
 # Check default R library paths
-check_default_library <- function(){
+myRenvCheck$check_default_library <- function(){
     RlibsUser <- Sys.getenv("R_LIBS_USER")
     #RlibsPath<-.libPaths()
     RlibsPath <- .Library
@@ -90,10 +72,9 @@ check_default_library <- function(){
         return("Failed")
     }
 }
-myRenvCheck$check_default_library <- TRUE
 
 # Check R path, "home"
-check_r_home <- function(){
+myRenvCheck$check_r_home <- function(){
     Rhome <- Sys.getenv("R_HOME")
     if (Rhome == "/opt/linux/centos/7.x/x86_64/pkgs/R/3.2.2/lib64/R"){
         return("Passed")
@@ -101,10 +82,9 @@ check_r_home <- function(){
         return("Failed")
     }
 }
-myRenvCheck$check_r_home <- TRUE
 
 # Check if module system is functioning
-check_modules <- function() {
+myRenvCheck$check_modules <- function() {
     modulelist <- function(){
         strsplit(system("bash -c \"module avail 2>&1\"", TRUE), "\\s+")
     }
@@ -121,20 +101,18 @@ check_modules <- function() {
         return(paste("Failed::", mlist[is.na(mlist[found != 0])]))
     }
 }
-myRenvCheck$check_modules <- TRUE
 
 # Check if user has a .html directory
-check_html <- function(){
+myRenvCheck$check_html <- function(){
     if (file.exists("~/.html") && file.info("~/.html")$mode > as.octmode("754")){
         return("Passed")
     } else {
         return("Failed")
     }
 }
-myRenvCheck$check_html <- TRUE
 
 # Check if qsub works
-check_qsub <- function(){
+myRenvCheck$check_qsub <- function(){
     qsub <- strsplit(system("bash -c \"which qsub\"", TRUE),"\\s+")
     if (length(qsub) > 0){
         return("Passed")
@@ -142,7 +120,9 @@ check_qsub <- function(){
         return("Failed")
     }
 }
-myRenvCheck$check_qsub <- TRUE
 
-show(myRenvCheck)
+# Run all checks
+.onLoad <- function(){
+    show(myRenvCheck)
+}
 
