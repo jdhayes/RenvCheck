@@ -23,6 +23,7 @@ myRenvCheck <- structure(list(), class="RenvCheck")
 # Check for storage requirements
 myRenvCheck$check_storage <- function(){
     quota_info <- suppressWarnings(strsplit(system('check_quota home',TRUE), "\\s+"))
+    return(quota_info)
     hquota <- suppressWarnings(as.integer(quota_info[[3]][[4]]))
     husage <- suppressWarnings(as.integer(quota_info[[3]][[3]]))
     #bquota <- as.integer(strsplit(system('check_quota bigdata',TRUE), "\\s+")[[3]][[4]])
