@@ -76,7 +76,7 @@ myRenvCheck$check_default_library <- function(){
 # Check R path, "home"
 myRenvCheck$check_r_home <- function(){
     Rhome <- Sys.getenv("R_HOME")
-    if (Rhome == "/opt/linux/centos/7.x/x86_64/pkgs/R/3.2.2/lib64/R"){
+    if (Rhome == "/opt/linux/centos/7.x/x86_64/pkgs/R/3.4.0/lib64/R"){
         return("Passed")
     } else {
         return("Failed")
