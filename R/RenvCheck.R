@@ -22,8 +22,7 @@ myRenvCheck <- structure(list(), class="RenvCheck")
 
 # Check for storage requirements
 myRenvCheck$check_storage <- function(){
-    quota_info <- suppressWarnings(strsplit(system('check_quota home',TRUE), "\\s+"))
-    return(quota_info)
+    quota_info <- suppressWarnings(strsplit(system('mmlsquota home --block-size=G',TRUE), "\\s+"))
     hquota <- suppressWarnings(as.integer(quota_info[[3]][[4]]))
     husage <- suppressWarnings(as.integer(quota_info[[3]][[3]]))
     #bquota <- as.integer(strsplit(system('check_quota bigdata',TRUE), "\\s+")[[3]][[4]])
@@ -93,7 +92,7 @@ myRenvCheck$check_modules <- function() {
     find_module <- function(module){
         grep(module, modules, perl=TRUE)
     }
-    mlist <- c("torque/5.1.0","bwa/0.7.12","tophat/2.0.14")
+    mlist <- c("slurm/16.05.4","bwa/0.7.12","tophat/2.1.1")
     library("BiocParallel")
     found <- bplapply(mlist, find_module)
     if (length(mlist[is.na(mlist[found != 0])])==0){
@@ -112,10 +111,10 @@ myRenvCheck$check_html <- function(){
     }
 }
 
-# Check if qsub works
-myRenvCheck$check_qsub <- function(){
-    qsub <- strsplit(system("bash -c \"which qsub\"", TRUE),"\\s+")
-    if (length(qsub) > 0){
+# Check if sbatch works
+myRenvCheck$check_sbatch <- function(){
+    sbatch <- strsplit(system("bash -c \"which sbatch\"", TRUE),"\\s+")
+    if (length(sbatch) > 0){
         return("Passed")
     } else {
         return("Failed")
