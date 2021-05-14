@@ -120,10 +120,12 @@ RenvCheck <- R6Class("RenvCheck",
             mlist <- c("slurm/19.05.0","bwa/0.7.17","hisat2/2.2.1")
             library("BiocParallel")
             found <- bplapply(mlist, find_module)
-            cat('\n ')
+            
+            # Return if found or not
             if (length(mlist[is.na(mlist[found != 0])])==0){
                 return("Passed")
             }else {
+                cat('\n ')
                 return(paste("\t\tFailed::", mlist[is.na(mlist[found != 0])]))
             }
         },
