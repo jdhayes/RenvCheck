@@ -1,9 +1,9 @@
 Package: RenvCheck
 Type: Package
-Title: Check Biocluster R environment for compatibility
-Version: 1.0
-Date: 2016-03-30
+Title: Check R environment for compatibility
+Version: 1.1
+Date: 2021-05-14
 Author: Jordan Hayes
-Maintainer: UCR Bioinformatics Facility <support@biocluster.ucr.edu>
-Description: This package executes a series of checks under the Biocluster R environment.
+Maintainer: UCR HPC Center <support@hpcc.ucr.edu>
+Description: This package executes a series of checks under the HPCC R environment.
 License: FREE
