@@ -96,7 +96,7 @@ RenvCheck <- R6Class("RenvCheck",
         # Check R path, "home"
         check_r_home = function(){
             Rhome <- Sys.getenv("R_HOME")
-            if (Rhome == "/opt/linux/centos/7.x/x86_64/pkgs/R/4.0.1/bin/R" || Rhome == "/opt/linux/centos/7.x/x86_64/pkgs/R/4.0.3_gcc-8.3.0/bin/R"){
+            if (Rhome == "/opt/linux/centos/7.x/x86_64/pkgs/R/4.0.1/lib64/R" || Rhome == "/opt/linux/centos/7.x/x86_64/pkgs/R/4.0.3_gcc-8.3.0/lib64/R"){
                 return("Passed")
             } else {
                 return("Failed")
