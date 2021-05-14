@@ -113,8 +113,12 @@ myRenvCheck$check_html <- function(){
 
 # Check if sbatch works
 myRenvCheck$check_sbatch <- function(){
-    sbatch <- strsplit(system("bash -c \"which sbatch\"", TRUE),"\\s+")
-    if (length(sbatch) > 0){
+    sbatch <- NA
+    try(
+        sbatch <- suppressWarnings(strsplit(system("bash -c 'which sbatch' 2>/dev/null", TRUE),"\\s+")),
+        silent=TRUE
+    )
+    if (length(sbatch)==1 && file.exists(sbatch[[1]])){
         return("Passed")
     } else {
         return("Failed")
@@ -125,4 +129,3 @@ myRenvCheck$check_sbatch <- function(){
 .onLoad <- function(libname, pkgname){
     run_checks(myRenvCheck)
 }
-
